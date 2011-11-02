@@ -602,8 +602,7 @@ public class UICCTesterActivity extends Activity {
 	}
 
 	public void e_postLog() {
-		String host = "89.187.141.114";
-		host = "tm.securitynet.cz";
+		String host = "server";
 		String link = "http://" + host + "/u/moravekp/simpost.php";
 
 		DefaultHttpClient hc = new DefaultHttpClient();
