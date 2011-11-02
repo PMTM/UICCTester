@@ -5,73 +5,17 @@
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:orientation="horizontal" android:layout_width="match_parent"
 		android:layout_height="wrap_content">
-		<Button android:layout_height="wrap_content" android:id="@+id/bu01"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="Post Log" android:onClick="postLog"></Button>
-		<Button android:layout_height="wrap_content" android:id="@+id/bu02"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="Clean Log" android:onClick="cleanLog"></Button>
+		<Spinner android:layout_height="wrap_content" android:id="@+id/sel"
+			android:layout_width="wrap_content" android:layout_weight="10"></Spinner>
+		<Button android:layout_height="wrap_content" android:id="@+id/gobut"
+			android:layout_width="wrap_content" android:layout_weight="1"
+			android:text="Go!" android:onClick="goBut"></Button>
 	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:orientation="horizontal" android:layout_width="match_parent"
-		android:layout_height="wrap_content">
-		<Button android:layout_height="wrap_content" android:id="@+id/bu03"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="B: ISD AID select" android:onClick="isdAID_B"></Button>
-		<Button android:layout_height="wrap_content" android:id="@+id/bu04"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="B: CRS App AID" android:onClick="crsAppAID_B"></Button>
-	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:orientation="horizontal" android:layout_width="match_parent"
-		android:layout_height="wrap_content">
-		<Button android:layout_height="wrap_content" android:id="@+id/bu05"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="B: No AID select" android:onClick="noAID_B"></Button>
-		<Button android:layout_height="wrap_content" android:id="@+id/bu06"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="L: No AID select" android:onClick="noAID_L"></Button>
-	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:orientation="horizontal" android:layout_width="match_parent"
-		android:layout_height="wrap_content">
-		<Button android:layout_height="wrap_content" android:id="@+id/bu07"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="L: ISD AID select" android:onClick="isdAID_L"></Button>
-		<Button android:layout_height="wrap_content" android:id="@+id/bu08"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="L: CRS App RAPL1" android:onClick="crsAppRAPL1_L"></Button>
-	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:orientation="horizontal" android:layout_width="match_parent"
-		android:layout_height="wrap_content">
-		<Button android:layout_height="wrap_content" android:id="@+id/bu09"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="L: CRS App RAPL2" android:onClick="crsAppRAPL2_L"></Button>
-		<Button android:layout_height="wrap_content" android:id="@+id/bu10"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="Restart SE Svc" android:onClick="restartSESvc"></Button>
-	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:orientation="horizontal" android:layout_width="match_parent"
-		android:layout_height="wrap_content">
-		<Button android:layout_height="wrap_content" android:id="@+id/bu11"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="L: RAPL1 AID" android:onClick="rapl1AID_L"></Button>
-		<Button android:layout_height="wrap_content" android:id="@+id/bu12"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="L: RAPL2 AID" android:onClick="rapl2AID_L"></Button>
-	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:orientation="horizontal" android:layout_width="match_parent"
-		android:layout_height="wrap_content">
-		<Button android:layout_height="wrap_content" android:id="@+id/bu13"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="CRS Disable CL" android:onClick="crsDisClIf"></Button>
-		<Button android:layout_height="wrap_content" android:id="@+id/bu14"
-			android:layout_width="fill_parent" android:layout_weight="1"
-			android:text="CRS Enable CL" android:onClick="crsEnaClIf"></Button>
-	</LinearLayout>
+	<TextView android:text="...description..." android:id="@+id/help"
+		android:layout_width="match_parent" android:layout_height="wrap_content"></TextView>
+	<TextView android:textAppearance="?android:attr/textAppearanceMedium"
+		android:id="@+id/textView2" android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:text="Log:"></TextView>
 	<ScrollView android:id="@+id/ScrollView01"
 		android:layout_width="fill_parent" android:layout_height="fill_parent">
 		<TextView android:id="@+id/textView1" android:layout_width="fill_parent"

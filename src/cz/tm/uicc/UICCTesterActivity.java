@@ -13,12 +13,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.simalliance.openmobileapi.Channel;
-//import org.simalliance.openmobileapi.R;
+import org.simalliance.openmobileapi.Channel; //import org.simalliance.openmobileapi.R;
 import org.simalliance.openmobileapi.Reader;
 import org.simalliance.openmobileapi.SEService;
-import org.simalliance.openmobileapi.Session;
-//import org.simalliance.openmobileapi.OpenMobileApiSampleActivity.SESvcCB;
+import org.simalliance.openmobileapi.Session; //import org.simalliance.openmobileapi.OpenMobileApiSampleActivity.SESvcCB;
 import org.simalliance.openmobileapi.SEService.CallBack;
 
 import android.app.Activity;
@@ -27,21 +25,28 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 public class UICCTesterActivity extends Activity {
 
 	private TextView mText;
+	private TextView mHelp;
+	private Spinner mSpin;
 	private String logStr = "";
 	private ScrollView mScrollView;
+	private int selItem;
 	@SuppressWarnings("unused")
 	private SEService mSESvc = null;
 	private CallBack mCB = null;
 
 	private SEService mSEService = null;
 	private Boolean mSEServiceReady = false;
-	
+
 	private Channel logicalChannel;
 	private Channel basicChannel;
 	private byte[] response;
@@ -62,7 +67,7 @@ public class UICCTesterActivity extends Activity {
 			(byte) 0xDA, 0x01, 0x01 };
 	private static final byte[] RAPL2_AID = new byte[] { (byte) 0xA0, 0x00, 0x00, 0x00, (byte) 0x87, 0x10, 0x03, (byte) 0xFF, 0x49, (byte) 0x94, 0x20, (byte) 0x89, (byte) 0xFF,
 			(byte) 0xDA, 0x02, 0x02 };
-	
+
 	private static final byte[] CRS_RAPL1_CMD = new byte[] { (byte) 0x80, (byte) 0xF2, (byte) 0x40, 0x00, 0x12, 0x4f, 0x10, (byte) 0xA0, 0x00, 0x00, 0x00, (byte) 0x87, 0x10, 0x03,
 			(byte) 0xFF, 0x49, (byte) 0x94, 0x20, (byte) 0x89, (byte) 0xFF, (byte) 0xDA, 0x01, 0x01 };
 	private static final byte[] CRS_RAPL2_CMD = new byte[] { (byte) 0x80, (byte) 0xF2, (byte) 0x40, 0x00, 0x12, 0x4f, 0x10, (byte) 0xA0, 0x00, 0x00, 0x00, (byte) 0x87, 0x10, 0x03,
@@ -70,10 +75,26 @@ public class UICCTesterActivity extends Activity {
 
 	private static byte[] CRS_CMD = CRS_RAPL1_CMD;
 
-	private static final byte[] RAPL_CMD = new byte[] { (byte) 0x80, (byte) 0x56, (byte) 0x00, 0x00, 0x09, (byte)0xff, (byte)0xff, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x1a };
+	private static final byte[] RAPL_CMD = new byte[] { (byte) 0x80, (byte) 0x56, (byte) 0x00, 0x00, 0x09, (byte) 0xff, (byte) 0xff, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x1a };
 
-	private static final byte[] CRS_CLENA_CMD = new byte[] { (byte) 0x80, (byte) 0xF0, (byte) 0x04, (byte) 0x80, 0x03, (byte)0x80, (byte)0x01, 0x40 };
-	private static final byte[] CRS_CLDIS_CMD = new byte[] { (byte) 0x80, (byte) 0xF0, (byte) 0x04, (byte) 0x00, 0x03, (byte)0x80, (byte)0x01, 0x40 };
+	private static final byte[] CRS_CLENA_CMD = new byte[] { (byte) 0x80, (byte) 0xF0, (byte) 0x04, (byte) 0x80, 0x03, (byte) 0x80, (byte) 0x01, 0x40 };
+	private static final byte[] CRS_CLDIS_CMD = new byte[] { (byte) 0x80, (byte) 0xF0, (byte) 0x04, (byte) 0x00, 0x03, (byte) 0x80, (byte) 0x01, 0x40 };
+
+	String[] items = new String[] { "Connect SE service", "B:ISD AID select", "B:CRS App AID", "B:No AID select", "L:No AID select", "L:ISD AID select", "L:CRS App AID",
+			"L:Query RAPL1 AID in CRS", "L:Query RAPL2 AID in CRS", "L:Query RAPL1 AID", "L:Query RAPL2 AID",
+
+			"L:CRS Disable CL", "L:CRS Enable CL",
+
+			"Post Log", "Clean Log", };
+
+	String[] help = new String[] { "Connect to the SE service and set callback on connect", "Select ISD AID through basic channel", "Select CRS AID through basic channel",
+			"Open basic channel without specifying AID", "Open logical channel without specifying AID", "Select ISD AID through logical channel",
+			"Select CRS AID through logical channel", "Query CRS for RAPL1 info by AID through logical channel", "Query CRS for RAPL2 info by AID through logical channel",
+			"Query RAPL1 info through logical channel", "Query RAPL2 info through logical channel",
+
+			"Disable CL interface through CRS", "Enable CL interface through CRS",
+
+			"Post Log to the web for better reading and copy and paste", "Clean Log", };
 
 	private static String bytesToString(byte[] bytes) {
 		StringBuffer sb = new StringBuffer();
@@ -90,10 +111,30 @@ public class UICCTesterActivity extends Activity {
 
 		setContentView(R.layout.main);
 
+		mSpin = (Spinner) findViewById(R.id.sel);
 		mScrollView = (ScrollView) findViewById(R.id.ScrollView01);
 		mText = (TextView) findViewById(R.id.textView1);
-		mCB = (CallBack) new SESvcCB();
-		mSESvc = new SEService(this, mCB);
+		mHelp = (TextView) findViewById(R.id.help);
+
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		mSpin.setAdapter(adapter);
+
+		mSpin.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				// items[0] = "One";
+				// selectedItem = items[position];
+				Log.e("Spin", "Selected = " + arg2);
+				mHelp.setText(help[arg2]);
+				selItem = arg2;
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+
 	}
 
 	public class SESvcCB implements CallBack {
@@ -259,7 +300,7 @@ public class UICCTesterActivity extends Activity {
 		}
 		logIt("ops_crsDisClIf(SEService)");
 	}
-	
+
 	void ops_crsEnaClIf(SEService service) {
 
 		Reader[] readers = service.getReaders();
@@ -496,7 +537,7 @@ public class UICCTesterActivity extends Activity {
 			}
 		}
 	}
-	
+
 	void ops_noAID_L(SEService service) {
 
 		Reader[] readers = service.getReaders();
@@ -555,12 +596,12 @@ public class UICCTesterActivity extends Activity {
 		super.onDestroy();
 	}
 
-	public void cleanLog(View view) {
+	public void e_cleanLog() {
 		logStr = "";
 		mText.setText(logStr);
 	}
 
-	public void postLog(View view) {
+	public void e_postLog() {
 		String host = "89.187.141.114";
 		host = "tm.securitynet.cz";
 		String link = "http://" + host + "/u/moravekp/simpost.php";
@@ -588,117 +629,76 @@ public class UICCTesterActivity extends Activity {
 		}
 	}
 
-	public void noAID_B(View view) {
-		logIt("invoke","noAID_B");
-		if (mSEServiceReady) {
-			ops_noAID_B(mSEService);
-		} else {
-			logIt("No SE service connected");
-		}
-	}
-
-	public void isdAID_B(View view) {
-		logIt("invoke","isdAID_B");
-		if (mSEServiceReady) {
-			ops_isdAID_B(mSEService);
-		} else {
-			logIt("No SE service connected");
-		}
-	}
-
-	public void crsAppAID_B(View view) {
-		logIt("invoke","crsAppAID_B");
-		if (mSEServiceReady) {
-			ops_crsAppAID_B(mSEService);
-		} else {
-			logIt("No SE service connected");
-		}
-	}
-
-	public void noAid_L(View view) {
-		logIt("invoke","noAID_L");
-		if (mSEServiceReady) {
-			ops_noAID_L(mSEService);
-		} else {
-			logIt("No SE service connected");
-		}
-	}
-
-	public void isdAID_L(View view) {
-		logIt("invoke","isdAID_L");
-		if (mSEServiceReady) {
-			ops_isdAID_L(mSEService);
-		} else {
-			logIt("No SE service connected");
-		}
-	}
-
-	public void crsAppRAPL1_L(View view) {
-		logIt("invoke","crsAppRAPL1_L");
-		if (mSEServiceReady) {
-			ops_crsAppRAPL1_L(mSEService);
-		} else {
-			logIt("No SE service connected");
-		}
-	}
-
-	public void crsAppRAPL2_L(View view) {
-		logIt("invoke","crsAppRAPL2_L");
-		if (mSEServiceReady) {
-			ops_crsAppRAPL2_L(mSEService);
-		} else {
-			logIt("No SE service connected");
-		}
-	}
-
-	public void rapl1AID_L(View view) {
-		logIt("invoke","rapl2AID_L");
-		if (mSEServiceReady) {
-			ops_rapl1AID_L(mSEService);
-		} else {
-			logIt("No SE service connected");
-		}
-	}
-
-	public void rapl2AID_L(View view) {
-		logIt("invoke","rapl2AID_L");
-		if (mSEServiceReady) {
-			ops_rapl2AID_L(mSEService);
-		} else {
-			logIt("No SE service connected");
-		}
-	}
-
 	public void restartSESvc(View view) {
 		if (mSEServiceReady) {
-			logIt("restartSESvc","shutdown");
+			logIt("restartSESvc", "shutdown");
 			mSEService.shutdown();
-			mSEServiceReady=false;
+			mSEServiceReady = false;
 		} else {
 			logIt("No SE service connected");
 		}
-		logIt("restartSESvc","connect");
-		 mCB = (CallBack) new SESvcCB();
+		logIt("restartSESvc", "connect");
+		mCB = (CallBack) new SESvcCB();
 		mSESvc = new SEService(this, mCB);
 	}
 
-	public void crsDisClIf(View view) {
-		logIt("invoke","crsDisClIf");
-		if (mSEServiceReady) {
-			ops_crsDisClIf(mSEService);
-		} else {
-			logIt("No SE service connected");
-		}
-	}
+	public void goBut(View view) {
+		logIt("invoke", "goBut");
+		if (selItem == 0 || mSEServiceReady) {
+			switch (selItem) {
+			case 0:
+				mCB = (CallBack) new SESvcCB();
+				mSESvc = new SEService(this, mCB);
+				break;
 
-	public void crsEnaClIf(View view) {
-		logIt("invoke","crsEnaClIf");
-		if (mSEServiceReady) {
-			ops_crsEnaClIf(mSEService);
-		} else {
-			logIt("No SE service connected");
+			case 1:
+				ops_isdAID_B(mSEService);
+				break;
+			case 2:
+				ops_crsAppAID_B(mSEService);
+				break;
+			case 3:
+				ops_noAID_B(mSEService);
+				break;
+
+			case 4:
+				ops_isdAID_L(mSEService);
+				break;
+			case 5:
+				ops_isdAID_L(mSEService);
+				break;
+			case 6:
+				ops_noAID_L(mSEService);
+				break;
+
+			case 7:
+				ops_crsAppRAPL1_L(mSEService);
+				break;
+			case 8:
+				ops_crsAppRAPL2_L(mSEService);
+				break;
+			case 9:
+				ops_rapl1AID_L(mSEService);
+				break;
+			case 10:
+				ops_rapl2AID_L(mSEService);
+				break;
+				
+			case 11:
+				ops_crsDisClIf(mSEService);
+				break;
+			case 12:
+				ops_crsEnaClIf(mSEService);
+				break;
+				
+			case 13:
+				e_cleanLog();
+				break;
+			case 14:
+				e_postLog();
+				break;
+			}
 		}
-		
 	}
 
 	private void logIt(String pfx, String str) {
@@ -730,7 +730,7 @@ public class UICCTesterActivity extends Activity {
 	private void logIt(String pfx, String str, Exception e) {
 		logIt(pfx, str);
 		String msg = e.toString();
-		logIt("Exception",msg+"\n");
+		logIt("Exception", msg + "\n");
 	}
 
 }
