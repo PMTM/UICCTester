@@ -20,9 +20,13 @@ import org.simalliance.openmobileapi.Session; //import org.simalliance.openmobil
 import org.simalliance.openmobileapi.SEService.CallBack;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -135,6 +139,24 @@ public class UICCTesterActivity extends Activity {
 			}
 		});
 
+	}
+
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.one:
+			startActivity(new Intent (this, CfgAct.class));
+			return true;
+		case R.id.two:
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	public class SESvcCB implements CallBack {
@@ -682,14 +704,14 @@ public class UICCTesterActivity extends Activity {
 			case 10:
 				ops_rapl2AID_L(mSEService);
 				break;
-				
+
 			case 11:
 				ops_crsDisClIf(mSEService);
 				break;
 			case 12:
 				ops_crsEnaClIf(mSEService);
 				break;
-				
+
 			case 13:
 				e_cleanLog();
 				break;
