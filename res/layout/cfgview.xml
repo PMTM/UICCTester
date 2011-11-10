@@ -5,11 +5,11 @@
 	<TextView android:textAppearance="?android:attr/textAppearanceLarge"
 		android:text="Server url base" android:id="@+id/textView1"
 		android:layout_height="wrap_content" android:layout_width="match_parent"></TextView>
-	<EditText android:id="@+id/editText1" android:layout_width="match_parent"
+	<EditText android:id="@+id/et1" android:layout_width="match_parent"
 		android:layout_height="wrap_content">
 		<requestFocus></requestFocus>
 	</EditText>
-	<Button android:text="Save" android:id="@+id/button1"
-		android:layout_width="match_parent" android:layout_height="wrap_content"></Button>
+	<Button android:text="Save" android:id="@+id/saveBut"
+		android:layout_width="match_parent" android:layout_height="wrap_content" android:onClick="saveBut"></Button>
 
 </LinearLayout>

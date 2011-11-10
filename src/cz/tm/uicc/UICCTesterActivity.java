@@ -1,6 +1,7 @@
 package cz.tm.uicc;
 
 import java.io.IOException;
+
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,15 +14,17 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.simalliance.openmobileapi.Channel; //import org.simalliance.openmobileapi.R;
+import org.simalliance.openmobileapi.Channel;
 import org.simalliance.openmobileapi.Reader;
 import org.simalliance.openmobileapi.SEService;
-import org.simalliance.openmobileapi.Session; //import org.simalliance.openmobileapi.OpenMobileApiSampleActivity.SESvcCB;
+import org.simalliance.openmobileapi.Session;
 import org.simalliance.openmobileapi.SEService.CallBack;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -57,39 +60,38 @@ public class UICCTesterActivity extends Activity {
 	private byte[] cmd;
 	private Session session;
 
-	private static final byte[] ISD_AID = new byte[] { (byte) 0xA0, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00 };
-	private static final byte[] ISD_CMD = new byte[] { (byte) 0x80, (byte) 0xCA, (byte) 0x9F, 0x7F, 0x00 };
+	static String S_ISD_AID = "A0 00 00 00 03 00 00 00";
+	static String S_ISD_CMD = "80 CA 9F 7F 00";
+	static String S_CRS_AID = "A0 00 00 01 51 43 52 53 00";
+	static String S_CRS_CMD_ALL = "80 F2 40 00 02 4f 00 00";
+	static String S_RAPL1_AID = "A0 00 00 00 87 10 03 FF 49 94 20 89 FF DA 01 01";
+	static String S_RAPL2_AID = "A0 00 00 00 87 10 03 FF 49 94 20 89 FF DA 02 02";
+	static String S_CRS_RAPL1_CMD = "80 F2 40 00 12 4f 10 A0 00 00 00 87 10 03 FF 49 94 20 89 FF DA 01 01";
+	static String S_CRS_RAPL2_CMD = "80 F2 40 00 12 4f 10 A0 00 00 00 87 10 03 FF 49 94 20 89 FF DA 02 02 00";
+	static String S_RAPL_CMD = "80 56 00 00 09 ff ff 00 01 00 00 00 00 1a";
+	static String S_CRS_CLENA_CMD = "80 F0 04 80 03 80 01 40";
+	static String S_CRS_CLDIS_CMD = "80 F0 04 00 03 80 01 40";
 
-	private static final byte[] CRS_AID = new byte[] { (byte) 0xA0, 0x00, 0x00, 0x01, 0x51, 0x43, 0x52, 0x53, 0x00 };
-	// private static final byte[] CRS_AID = new byte[] { (byte) 0xA0, 0x00,
-	// 0x00, 0x01, 0x51, 0x02 };
-
+	private static final byte[] ISD_AID = hs2ba(S_ISD_AID);
+	private static final byte[] ISD_CMD = hs2ba(S_ISD_CMD);
+	private static final byte[] CRS_AID = hs2ba(S_CRS_AID);
 	@SuppressWarnings("unused")
-	private static final byte[] CRS_CMD_ALL = new byte[] { (byte) 0x80, (byte) 0xF2, (byte) 0x40, 0x00, 0x02, 0x4f, 0x00, 0x00 };
-
-	private static final byte[] RAPL1_AID = new byte[] { (byte) 0xA0, 0x00, 0x00, 0x00, (byte) 0x87, 0x10, 0x03, (byte) 0xFF, 0x49, (byte) 0x94, 0x20, (byte) 0x89, (byte) 0xFF,
-			(byte) 0xDA, 0x01, 0x01 };
-	private static final byte[] RAPL2_AID = new byte[] { (byte) 0xA0, 0x00, 0x00, 0x00, (byte) 0x87, 0x10, 0x03, (byte) 0xFF, 0x49, (byte) 0x94, 0x20, (byte) 0x89, (byte) 0xFF,
-			(byte) 0xDA, 0x02, 0x02 };
-
-	private static final byte[] CRS_RAPL1_CMD = new byte[] { (byte) 0x80, (byte) 0xF2, (byte) 0x40, 0x00, 0x12, 0x4f, 0x10, (byte) 0xA0, 0x00, 0x00, 0x00, (byte) 0x87, 0x10, 0x03,
-			(byte) 0xFF, 0x49, (byte) 0x94, 0x20, (byte) 0x89, (byte) 0xFF, (byte) 0xDA, 0x01, 0x01 };
-	private static final byte[] CRS_RAPL2_CMD = new byte[] { (byte) 0x80, (byte) 0xF2, (byte) 0x40, 0x00, 0x12, 0x4f, 0x10, (byte) 0xA0, 0x00, 0x00, 0x00, (byte) 0x87, 0x10, 0x03,
-			(byte) 0xFF, 0x49, (byte) 0x94, 0x20, (byte) 0x89, (byte) 0xFF, (byte) 0xDA, 0x02, 0x02, 0x00 };
-
+	private static final byte[] CRS_CMD_ALL = hs2ba(S_CRS_CMD_ALL);
+	private static final byte[] RAPL1_AID = hs2ba(S_RAPL1_AID);
+	private static final byte[] RAPL2_AID = hs2ba(S_RAPL2_AID);
+	private static final byte[] CRS_RAPL1_CMD = hs2ba(S_CRS_RAPL1_CMD);
+	private static final byte[] CRS_RAPL2_CMD = hs2ba(S_CRS_RAPL2_CMD);
 	private static byte[] CRS_CMD = CRS_RAPL1_CMD;
-
-	private static final byte[] RAPL_CMD = new byte[] { (byte) 0x80, (byte) 0x56, (byte) 0x00, 0x00, 0x09, (byte) 0xff, (byte) 0xff, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x1a };
-
-	private static final byte[] CRS_CLENA_CMD = new byte[] { (byte) 0x80, (byte) 0xF0, (byte) 0x04, (byte) 0x80, 0x03, (byte) 0x80, (byte) 0x01, 0x40 };
-	private static final byte[] CRS_CLDIS_CMD = new byte[] { (byte) 0x80, (byte) 0xF0, (byte) 0x04, (byte) 0x00, 0x03, (byte) 0x80, (byte) 0x01, 0x40 };
+	private static final byte[] RAPL_CMD = hs2ba(S_RAPL_CMD);
+	private static final byte[] CRS_CLENA_CMD = hs2ba(S_CRS_CLENA_CMD);
+	private static final byte[] CRS_CLDIS_CMD = hs2ba(S_CRS_CLDIS_CMD);
 
 	String[] items = new String[] { "Connect SE service", "B:ISD AID select", "B:CRS App AID", "B:No AID select", "L:No AID select", "L:ISD AID select", "L:CRS App AID",
 			"L:Query RAPL1 AID in CRS", "L:Query RAPL2 AID in CRS", "L:Query RAPL1 AID", "L:Query RAPL2 AID",
 
 			"L:CRS Disable CL", "L:CRS Enable CL",
 
-			"Post Log", "Clean Log", };
+			"Post Log", "Clean Log", "Run Script" };
 
 	String[] help = new String[] { "Connect to the SE service and set callback on connect", "Select ISD AID through basic channel", "Select CRS AID through basic channel",
 			"Open basic channel without specifying AID", "Open logical channel without specifying AID", "Select ISD AID through logical channel",
@@ -98,15 +100,7 @@ public class UICCTesterActivity extends Activity {
 
 			"Disable CL interface through CRS", "Enable CL interface through CRS",
 
-			"Post Log to the web for better reading and copy and paste", "Clean Log", };
-
-	private static String bytesToString(byte[] bytes) {
-		StringBuffer sb = new StringBuffer();
-		for (byte b : bytes) {
-			sb.append(String.format("%02x ", b & 0xFF));
-		}
-		return sb.toString();
-	}
+			"Post Log to the web for better reading and copy and paste", "Clean Log", "Run a script" };
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -138,6 +132,9 @@ public class UICCTesterActivity extends Activity {
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		});
+		
+		mCB = (CallBack) new SESvcCB();
+		mSESvc = new SEService(this, mCB);
 
 	}
 
@@ -150,7 +147,7 @@ public class UICCTesterActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.one:
-			startActivity(new Intent (this, CfgAct.class));
+			startActivity(new Intent(this, CfgAct.class));
 			return true;
 		case R.id.two:
 			return true;
@@ -194,12 +191,12 @@ public class UICCTesterActivity extends Activity {
 
 				try {
 					session = reader.openSession();
-					logIt("OpenBasicChannel(AID=" + bytesToString(CRS_AID) + ")");
+					logIt("OpenBasicChannel(AID=" + ba2hs(CRS_AID) + ")");
 					basicChannel = session.openBasicChannel(CRS_AID);
 					logIt("basicChannel.transmit()");
-					logIt(" Command: " + bytesToString(CRS_CMD));
+					logIt(" Command: " + ba2hs(CRS_CMD));
 					response = basicChannel.transmit(CRS_CMD);
-					logIt(" Response: " + bytesToString(response));
+					logIt(" Response: " + ba2hs(response));
 
 				} catch (Exception e) {
 					logIt("", "", e);
@@ -232,12 +229,12 @@ public class UICCTesterActivity extends Activity {
 					continue;
 				try {
 					Session session = reader.openSession();
-					logIt("OpenBasicChannel(AID=" + bytesToString(ISD_AID) + ")");
+					logIt("OpenBasicChannel(AID=" + ba2hs(ISD_AID) + ")");
 					basicChannel = session.openBasicChannel(ISD_AID);
 					logIt("basicChannel.transmit()");
-					logIt(" Command: " + bytesToString(ISD_CMD));
+					logIt(" Command: " + ba2hs(ISD_CMD));
 					response = basicChannel.transmit(ISD_CMD);
-					logIt(" Response: " + bytesToString(response));
+					logIt(" Response: " + ba2hs(response));
 				} catch (Exception e) {
 					logIt("", "", e);
 				} finally {
@@ -273,9 +270,9 @@ public class UICCTesterActivity extends Activity {
 					basicChannel = session.openBasicChannel(null);
 					logIt("basicChannel.transmit()");
 					cmd = new byte[] { (byte) 0x80, (byte) 0xCA, (byte) 0x9F, 0x7F, 0x00 };
-					logIt(" Command: " + bytesToString(cmd));
+					logIt(" Command: " + ba2hs(cmd));
 					response = basicChannel.transmit(cmd);
-					logIt(" Response: " + bytesToString(response));
+					logIt(" Response: " + ba2hs(response));
 				} catch (Exception e) {
 					logIt("", "", e);
 				} finally {
@@ -307,12 +304,12 @@ public class UICCTesterActivity extends Activity {
 					continue;
 				try {
 					Session session = reader.openSession();
-					logIt("OpenLogicalChannel\nAID=" + bytesToString(CRS_AID));
+					logIt("OpenLogicalChannel\nAID=" + ba2hs(CRS_AID));
 					logicalChannel = session.openLogicalChannel(CRS_AID);
 					logIt("logicalChannel.transmit");
-					logIt("CMD=" + bytesToString(CRS_CLDIS_CMD));
+					logIt("CMD=" + ba2hs(CRS_CLDIS_CMD));
 					response = logicalChannel.transmit(CRS_CLDIS_CMD);
-					logIt("RC=" + bytesToString(response));
+					logIt("RC=" + ba2hs(response));
 				} catch (Exception e) {
 					logIt("", "", e);
 				} finally {
@@ -345,12 +342,12 @@ public class UICCTesterActivity extends Activity {
 					continue;
 				try {
 					Session session = reader.openSession();
-					logIt("OpenLogicalChannel\nAID=" + bytesToString(CRS_AID));
+					logIt("OpenLogicalChannel\nAID=" + ba2hs(CRS_AID));
 					logicalChannel = session.openLogicalChannel(CRS_AID);
 					logIt("logicalChannel.transmit");
-					logIt("CMD=" + bytesToString(CRS_CLENA_CMD));
+					logIt("CMD=" + ba2hs(CRS_CLENA_CMD));
 					response = logicalChannel.transmit(CRS_CLENA_CMD);
-					logIt("RC=" + bytesToString(response));
+					logIt("RC=" + ba2hs(response));
 				} catch (Exception e) {
 					logIt("", "", e);
 				} finally {
@@ -383,12 +380,12 @@ public class UICCTesterActivity extends Activity {
 					continue;
 				try {
 					Session session = reader.openSession();
-					logIt("OpenLogicalChannel\nAID=" + bytesToString(CRS_AID));
+					logIt("OpenLogicalChannel\nAID=" + ba2hs(CRS_AID));
 					logicalChannel = session.openLogicalChannel(CRS_AID);
 					logIt("logicalChannel.transmit");
-					logIt("CMD=" + bytesToString(CRS_RAPL1_CMD));
+					logIt("CMD=" + ba2hs(CRS_RAPL1_CMD));
 					response = logicalChannel.transmit(CRS_RAPL1_CMD);
-					logIt("RC=" + bytesToString(response));
+					logIt("RC=" + ba2hs(response));
 				} catch (Exception e) {
 					logIt("", "", e);
 				} finally {
@@ -421,12 +418,12 @@ public class UICCTesterActivity extends Activity {
 					continue;
 				try {
 					Session session = reader.openSession();
-					logIt("OpenLogicalChannel(AID=" + bytesToString(CRS_AID) + ")");
+					logIt("OpenLogicalChannel(AID=" + ba2hs(CRS_AID) + ")");
 					logicalChannel = session.openLogicalChannel(CRS_AID);
 					logIt("logicalChannel.transmit()");
-					logIt(" Command: " + bytesToString(CRS_RAPL2_CMD));
+					logIt(" Command: " + ba2hs(CRS_RAPL2_CMD));
 					response = logicalChannel.transmit(CRS_RAPL2_CMD);
-					logIt(" Response: " + bytesToString(response));
+					logIt(" Response: " + ba2hs(response));
 				} catch (Exception e) {
 					logIt("", "", e);
 				} finally {
@@ -459,13 +456,13 @@ public class UICCTesterActivity extends Activity {
 					continue;
 				try {
 					session = reader.openSession();
-					logIt("OpenLogicalChannel(AID=" + bytesToString(ISD_AID) + ")");
+					logIt("OpenLogicalChannel(AID=" + ba2hs(ISD_AID) + ")");
 					logicalChannel = session.openLogicalChannel(ISD_AID);
 					if (!logicalChannel.isClosed()) {
 						logIt("logicalChannel.transmit()");
-						logIt(" Command: " + bytesToString(ISD_CMD));
+						logIt(" Command: " + ba2hs(ISD_CMD));
 						response = logicalChannel.transmit(ISD_CMD);
-						logIt(" Response: " + bytesToString(response));
+						logIt(" Response: " + ba2hs(response));
 					} else {
 						logIt("logical channel is closed");
 					}
@@ -500,13 +497,13 @@ public class UICCTesterActivity extends Activity {
 					continue;
 				try {
 					session = reader.openSession();
-					logIt("OpenLogicalChannel(AID=" + bytesToString(RAPL1_AID) + ")");
+					logIt("OpenLogicalChannel(AID=" + ba2hs(RAPL1_AID) + ")");
 					logicalChannel = session.openLogicalChannel(RAPL1_AID);
 					if (!logicalChannel.isClosed()) {
 						logIt("logicalChannel.transmit()");
-						logIt(" Command: " + bytesToString(RAPL_CMD));
+						logIt(" Command: " + ba2hs(RAPL_CMD));
 						response = logicalChannel.transmit(RAPL_CMD);
-						logIt(" Response: " + bytesToString(response));
+						logIt(" Response: " + ba2hs(response));
 					} else {
 						logIt("logical channel is closed");
 					}
@@ -541,13 +538,13 @@ public class UICCTesterActivity extends Activity {
 					continue;
 				try {
 					session = reader.openSession();
-					logIt("OpenLogicalChannel(AID=" + bytesToString(RAPL2_AID) + ")");
+					logIt("OpenLogicalChannel(AID=" + ba2hs(RAPL2_AID) + ")");
 					logicalChannel = session.openLogicalChannel(RAPL2_AID);
 					if (!logicalChannel.isClosed()) {
 						logIt("logicalChannel.transmit()");
-						logIt(" Command: " + bytesToString(RAPL_CMD));
+						logIt(" Command: " + ba2hs(RAPL_CMD));
 						response = logicalChannel.transmit(RAPL_CMD);
-						logIt(" Response: " + bytesToString(response));
+						logIt(" Response: " + ba2hs(response));
 					} else {
 						logIt("logical channel is closed");
 					}
@@ -586,9 +583,9 @@ public class UICCTesterActivity extends Activity {
 					logicalChannel = session.openLogicalChannel(null);
 					logIt("logicalChannel.transmit()");
 					cmd = new byte[] { (byte) 0x80, (byte) 0xCA, (byte) 0x9F, 0x7F, 0x00 };
-					logIt(" Command: " + bytesToString(cmd));
+					logIt(" Command: " + ba2hs(cmd));
 					response = logicalChannel.transmit(cmd);
-					logIt(" Response: " + bytesToString(response));
+					logIt(" Response: " + ba2hs(response));
 
 					if (logicalChannel != null) {
 						logIt("logicalChannel.close()");
@@ -603,11 +600,80 @@ public class UICCTesterActivity extends Activity {
 		}
 	}
 
+	void ops_script(SEService service, String anAID, String[] aScript, String[] anExpect) {
+
+		Reader[] readers = service.getReaders();
+
+		if (readers.length == 0) {
+			logIt("No reader available \n");
+			service.shutdown();
+			return;
+		}
+
+		Reader selReader = null;
+		for (Reader reader : readers) {
+			if (reader.getName().equals("UICC")) {
+				selReader = reader;
+			}
+		}
+		boolean isPresent = selReader.isSecureElementPresent();
+		String s = isPresent ? "present" : "absent";
+		logIt("SecureElement : " + s);
+
+		if (isPresent) {
+			try {
+				Session session = selReader.openSession();
+				byte[] ba = null;
+				byte[] ex = null;
+
+				// Select particular AID
+				ba = hs2ba(anAID);
+				logIt("OpenLogicalChannel, AID=" + ba2hs(ba));
+				Channel xChannel = session.openLogicalChannel(ba);
+				// xChannel = session.openBasicChannel(ba);
+
+				// Send commands and expect responses
+				for (int i = 0; i < aScript.length; i++) {
+					ba = hs2ba(aScript[i]);
+					ex = hs2ba(anExpect[i]);
+					logIt("xChannel.transmit=" + ba2hs(ba));
+					response = xChannel.transmit(ba);
+					boolean match = false;
+					if (ex.length == response.length) {
+						boolean tmpMatch = true;
+						for (int j = 0; j < ex.length; j++) {
+							tmpMatch = tmpMatch && (ex[j] == response[j]);
+						}
+						match = tmpMatch;
+					}
+					if (match) {
+						logIt("Recieved expected response");
+					} else {
+						logIt("Error, unexpected response");
+						logIt(" Expected: " + ba2hs(ex));
+					}
+					logIt(" Response: " + ba2hs(response));
+				}
+
+				if (logicalChannel != null) {
+					logIt("logicalChannel.close()");
+					logicalChannel.close();
+				}
+			} catch (Exception e) {
+				logIt("", "", e);
+			} finally {
+				uiccClose();
+			}
+		}
+	}
+
 	void uiccClose() {
-		logIt("session.closeChannels()");
-		session.closeChannels();
-		logIt("session.close()");
-		session.close();
+		if (session!=null) {
+			logIt("session.closeChannels()");
+			session.closeChannels();
+			logIt("session.close()");
+			session.close();
+		};
 	}
 
 	@Override
@@ -624,8 +690,13 @@ public class UICCTesterActivity extends Activity {
 	}
 
 	public void e_postLog() {
-		String host = "server";
+
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		String host = prefs.getString("logServer", "server");
+
 		String link = "http://" + host + "/u/moravekp/simpost.php";
+		
+		logIt("UUUU",link);
 
 		DefaultHttpClient hc = new DefaultHttpClient();
 		ResponseHandler<String> res = new BasicResponseHandler();
@@ -664,7 +735,7 @@ public class UICCTesterActivity extends Activity {
 	}
 
 	public void goBut(View view) {
-		logIt("invoke", "goBut");
+		logIt("UUUU", "goBut:"+selItem);
 		if (selItem == 0 || mSEServiceReady) {
 			switch (selItem) {
 			case 0:
@@ -713,10 +784,25 @@ public class UICCTesterActivity extends Activity {
 				break;
 
 			case 13:
-				e_cleanLog();
+				e_postLog();
 				break;
 			case 14:
-				e_postLog();
+				e_cleanLog();
+				break;
+			case 15:
+				int sel = 1;
+				switch (sel) {
+				case 0:
+					String[] cmd0 = { S_RAPL_CMD, };
+					String[] exp0 = { "90", };
+					ops_script(mSEService, S_RAPL1_AID, cmd0, exp0);
+					break;
+				case 1:
+					String[] cmd1 = { S_CRS_RAPL1_CMD, };
+					String[] exp1 = { "61 68 4f 10 a0 00 00 00 87 10 03 ff 49 94 20 89 ff da 01 01 9f 70 02 00 01 80 02 00 00 88 01 00 8c 01 81 8a 01 00 8d 42 a0 1f 80 05 04 91 92 93 94 81 01 20 82 02 08 02 83 04 03 a1 a2 a3 84 01 70 85 01 01 86 03 03 03 00 a1 1f 80 05 00 00 00 00 00 81 01 ff 82 02 00 00 83 04 ff ff ff ff 84 01 ff 85 01 ff 86 03 ff ff ff 90 00", };
+					ops_script(mSEService, S_CRS_AID, cmd1, exp1);
+					break;
+				}
 				break;
 			}
 		}
@@ -754,4 +840,24 @@ public class UICCTesterActivity extends Activity {
 		logIt("Exception", msg + "\n");
 	}
 
+	public static final byte[] hs2ba(final String s) {
+		String[] v = s.split(" ");
+		byte[] arr = new byte[v.length];
+		int i = 0;
+		Log.e("UUUU","hs2ba:"+s);
+		for (String val : v) {
+			arr[i++] = Integer.decode("0x" + val).byteValue();
+
+		}
+		return arr;
+	}
+
+	private static String ba2hs(byte[] bytes) {
+		StringBuffer sb = new StringBuffer();
+		for (byte b : bytes) {
+			sb.append(String.format("%02x ", b & 0xFF));
+		}
+		Log.e("UUUU","ba2hs:"+sb.toString());
+		return sb.toString();
+	}
 }
