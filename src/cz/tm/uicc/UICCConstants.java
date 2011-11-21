@@ -1,5 +1,7 @@
 package cz.tm.uicc;
 
+import eu.mighty.javatools.HexTools;
+
 public class UICCConstants {
 	static String S_ISD_AID = "A0 00 00 00 03 00 00 00";
 	static String S_ISD_CMD = "80 CA 9F 7F 00";

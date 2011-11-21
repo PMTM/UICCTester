@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="eu/mighty/javatools/JavaToolsActivity.java" kind="src" path="javatools"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="lib/simalliance.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JavaTools"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

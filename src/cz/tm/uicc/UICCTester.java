@@ -16,9 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,8 +25,11 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import eu.mighty.javatools.LoggerTool;
+import eu.mighty.javatools.RestClient;
+import eu.mighty.javatools.UtilConstants;
 
-public class UICCTesterActivity extends Activity {
+public class UICCTester extends Activity {
 
 	private WebView wv = null;
 	private String logStr = "";
@@ -55,6 +56,8 @@ public class UICCTesterActivity extends Activity {
 		wv.setWebViewClient(new MyWebViewClient(this));
 
 		wv.addJavascriptInterface(new ServiceHandler(this), "dtest");
+		
+		wv.loadUrl(UtilConstants.baseUrl);
 
 		// mSpin = (Spinner) findViewById(R.id.sel);
 		// mScrollView = (ScrollView) findViewById(R.id.ScrollView01);
@@ -90,10 +93,14 @@ public class UICCTesterActivity extends Activity {
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.one:
+		case R.id.settings:
 			startActivity(new Intent(this, CfgAct.class));
 			return true;
-		case R.id.two:
+		case R.id.postLog:
+			RestClient.postString(UtilConstants.postUrl, "misc", this);
+			return true;
+		case R.id.getTest:
+			wv.loadUrl(UtilConstants.testUrl);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -114,11 +121,7 @@ public class UICCTesterActivity extends Activity {
 	}
 
 	public void e_postLog() {
-
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		String host = prefs.getString("logServer", "server");
-
-		String link = "http://" + host + "/u/moravekp/simpost.php";
+		String link = UtilConstants.getPostUrl(this);
 
 		LoggerTool.logIt("UUUU", link);
 

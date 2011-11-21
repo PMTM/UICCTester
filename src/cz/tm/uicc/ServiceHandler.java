@@ -8,12 +8,16 @@ import org.simalliance.openmobileapi.SEService;
 import org.simalliance.openmobileapi.Session;
 import org.simalliance.openmobileapi.SEService.CallBack;
 
+import eu.mighty.javatools.HexTools;
+import eu.mighty.javatools.LoggerTool;
+
 import android.app.Activity;
 import android.util.Log;
 
 public final class ServiceHandler {
 	Activity _a;
 
+	@SuppressWarnings("unused")
 	private Channel channel;
 //	private byte[] response;
 //	private byte[] cmd;
