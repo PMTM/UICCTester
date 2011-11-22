@@ -32,9 +32,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>javatools</name>
+			<name>JavaTools</name>
 			<type>2</type>
-			<location>/home/petr/git/pm-android/JavaTools/src</location>
+			<location>/home/moravekp/git/pm-android/JavaTools/src</location>
 		</link>
 	</linkedResources>
 </projectDescription>

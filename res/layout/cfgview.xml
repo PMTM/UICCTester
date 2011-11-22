@@ -3,13 +3,31 @@
 	android:orientation="vertical" android:layout_width="match_parent"
 	android:layout_height="match_parent">
 	<TextView android:textAppearance="?android:attr/textAppearanceLarge"
-		android:text="Server url base" android:id="@+id/textView1"
-		android:layout_height="wrap_content" android:layout_width="match_parent"></TextView>
-	<EditText android:id="@+id/et1" android:layout_width="match_parent"
-		android:layout_height="wrap_content">
+		android:text="Server url base" android:id="@+id/labelUrl"
+		android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_margin="5dip"></TextView>
+	<EditText android:id="@+id/etUrl" android:layout_width="match_parent"
+		android:layout_height="wrap_content" android:layout_margin="5dip">
 		<requestFocus></requestFocus>
 	</EditText>
+
+	<TextView android:textAppearance="?android:attr/textAppearanceLarge"
+		android:text="e-Mail" android:id="@+id/labelEmail"
+		android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_margin="5dip"></TextView>
+	<EditText android:id="@+id/etEmail" android:layout_width="match_parent"
+		android:layout_height="wrap_content" android:layout_margin="5dip">
+		<requestFocus></requestFocus>
+	</EditText>
+
+	<TextView android:textAppearance="?android:attr/textAppearanceLarge"
+		android:text="devKey" android:id="@+id/labelDevKey"
+		android:layout_height="wrap_content" android:layout_width="match_parent" android:layout_margin="5dip"></TextView>
+	<EditText android:id="@+id/etDevKey" android:layout_width="match_parent"
+		android:layout_height="wrap_content" android:layout_margin="5dip">
+		<requestFocus></requestFocus>
+	</EditText>
+
 	<Button android:text="Save" android:id="@+id/saveBut"
-		android:layout_width="match_parent" android:layout_height="wrap_content" android:onClick="saveBut"></Button>
+		android:layout_width="match_parent" android:layout_height="wrap_content"
+		android:onClick="saveBut" android:layout_margin="5dip"></Button>
 
 </LinearLayout>

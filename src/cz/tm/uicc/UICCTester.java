@@ -17,6 +17,8 @@ import org.apache.http.message.BasicNameValuePair;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,16 +27,27 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import eu.mighty.javatools.JSON2Java;
 import eu.mighty.javatools.LoggerTool;
 import eu.mighty.javatools.RestClient;
 import eu.mighty.javatools.UtilConstants;
+
+//android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen">
 
 public class UICCTester extends Activity {
 
 	private WebView wv = null;
 	private String logStr = "";
-	//private ScrollView mScrollView;
 	private int selItem;
+	private ServiceHandler mServiceHandler = null;
+
+	public Handler mMsgHandle = new Handler() {
+		public void handleMessage(Message msg) {
+			if (wv!=null) {
+				wv.loadUrl("javascript:seReady('"+(String)msg.obj+"')");
+			}
+		}
+	};
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,34 +68,10 @@ public class UICCTester extends Activity {
 		wv.setWebChromeClient(new MyWebChromeClient(this));
 		wv.setWebViewClient(new MyWebViewClient(this));
 
-		wv.addJavascriptInterface(new ServiceHandler(this), "dtest");
-		
+		mServiceHandler=new ServiceHandler(this);
+		wv.addJavascriptInterface(mServiceHandler, "dtest");
+
 		wv.loadUrl(UtilConstants.baseUrl);
-
-		// mSpin = (Spinner) findViewById(R.id.sel);
-		// mScrollView = (ScrollView) findViewById(R.id.ScrollView01);
-		// mText = (TextView) findViewById(R.id.textView1);
-		// mHelp = (TextView) findViewById(R.id.help);
-		//
-		// ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-		// android.R.layout.simple_spinner_item, items);
-		// adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		// mSpin.setAdapter(adapter);
-		//
-		// mSpin.setOnItemSelectedListener(new OnItemSelectedListener() {
-		// @Override
-		// public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
-		// long arg3) {
-		// Log.e("Spin", "Selected = " + arg2);
-		// mHelp.setText(help[arg2]);
-		// selItem = arg2;
-		// }
-		//
-		// @Override
-		// public void onNothingSelected(AdapterView<?> arg0) {
-		// }
-		// });
-
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -97,10 +86,13 @@ public class UICCTester extends Activity {
 			startActivity(new Intent(this, CfgAct.class));
 			return true;
 		case R.id.postLog:
-			RestClient.postString(UtilConstants.postUrl, "misc", this);
+			RestClient.postString(UtilConstants.postUrl, JSON2Java.jsonFromArray(mServiceHandler.logItems) , this);
 			return true;
 		case R.id.getTest:
-			wv.loadUrl(UtilConstants.testUrl);
+			wv.loadUrl(UtilConstants.baseUrl);
+			return true;
+		case R.id.help:
+			wv.loadUrl(UtilConstants.aboutUrl);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -109,9 +101,9 @@ public class UICCTester extends Activity {
 
 	@Override
 	protected void onDestroy() {
-//		if (mSEService != null) {
-//			mSEService.shutdown();
-//		}
+		// if (mSEService != null) {
+		// mSEService.shutdown();
+		// }
 		super.onDestroy();
 	}
 
