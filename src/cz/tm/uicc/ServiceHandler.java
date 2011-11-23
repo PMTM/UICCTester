@@ -9,6 +9,7 @@ import org.simalliance.openmobileapi.SEService;
 import org.simalliance.openmobileapi.Session;
 import org.simalliance.openmobileapi.SEService.CallBack;
 
+import eu.mighty.javatools.DateTimeUtil;
 import eu.mighty.javatools.HexTools;
 import eu.mighty.javatools.LoggerTool;
 import eu.mighty.javatools.TLV;
@@ -38,38 +39,40 @@ public final class ServiceHandler {
 		_a = anActivity;
 	}
 
-	public String UICCInit() {
+	public String UICCInit(String testID) {
 		Log.i(TAG, "JS: UICCInit");
 		mCB = (CallBack) new SESvcCB();
 		new SEService(_a, mCB);
+		logItems.clear();
+		log("testId: "+testID);
 		return "called";
 	}
 
-	public String cutBa(String baStr,String stStr,String lenStr) {
-		String res="";
+	public String cutBa(String baStr, String stStr, String lenStr) {
+		String res = "";
 		byte[] ba = HexTools.hs2ba(baStr);
 		byte[] bo = new byte[Integer.parseInt(lenStr)];
-		int sta=Integer.parseInt(stStr);
-		int len=Integer.parseInt(lenStr);
-		for(int i=0;i<len;i++) {
-			bo[i]=ba[sta+i];
+		int sta = Integer.parseInt(stStr);
+		int len = Integer.parseInt(lenStr);
+		for (int i = 0; i < len; i++) {
+			bo[i] = ba[sta + i];
 		}
-		res=HexTools.ba2hs(bo);
+		res = HexTools.ba2hs(bo);
 		return res;
 	}
-	
+
 	public void log(String txt) {
-		logItems.add(txt);
+		logItems.add("["+DateTimeUtil.getDTString()+"]: "+txt);
 	}
-	
-	public String getTLV(String baStr,String ofsStr) {
-		byte[] ba=HexTools.hs2ba(baStr);
+
+	public String getTLV(String baStr, String ofsStr) {
+		byte[] ba = HexTools.hs2ba(baStr);
 		int ofs = Integer.parseInt(ofsStr);
-		
-		TLV[] tlv = TLV.parseData(ba, ofs, ba.length-ofs);
-		return tlv[0].toString(); 
+
+		TLV[] tlv = TLV.parseData(ba, ofs, ba.length - ofs);
+		return tlv[0].toString();
 	}
-	
+
 	public String openBasicChannel(String AID) {
 		Log.i(TAG, "JS: openBasicChannel(AID=" + AID + ")");
 
@@ -192,7 +195,7 @@ public final class ServiceHandler {
 				}
 
 				Message pMsg = new Message();
-				String str = "connected:"+res;
+				String str = "connected:" + res;
 				pMsg.obj = str;
 				((UICCTester) _a).mMsgHandle.sendMessage(pMsg);
 			} catch (Exception e) {

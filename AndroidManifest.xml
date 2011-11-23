@@ -7,6 +7,7 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.VIBRATE" />
 	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:theme="@android:style/Theme.Light">
@@ -23,6 +24,7 @@
 				</intent-filter
 			-->
 		</activity>
-
+		<activity android:name=".CfgPrefs" android:label="Cfg UICC">
+		</activity>
 	</application>
 </manifest>

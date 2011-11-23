@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,7 +54,7 @@ public class UICCTester extends Activity {
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+		
 		setContentView(R.layout.webview);
 		wv = (WebView) findViewById(R.id.wv);
 		WebSettings webSettings = wv.getSettings();
@@ -79,10 +80,28 @@ public class UICCTester extends Activity {
 		inflater.inflate(R.menu.menu, menu);
 		return true;
 	}
+	
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(event.getAction() == KeyEvent.ACTION_DOWN){
+            switch(keyCode)
+            {
+            case KeyEvent.KEYCODE_BACK:
+                if(wv.canGoBack() == true){
+                    wv.goBack();
+                }else{
+                    finish();
+                }
+                return true;
+            }
 
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.settings:
+			//startActivity(new Intent(this, CfgPrefs.class));
 			startActivity(new Intent(this, CfgAct.class));
 			return true;
 		case R.id.postLog:
