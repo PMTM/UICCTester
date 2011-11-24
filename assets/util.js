@@ -1,21 +1,27 @@
-function log(txt,sep) {
-	dtest.log(txt);
+function msg(type,txt) {
+
+	dtest.log(type,txt);
+	htxt=txt;
+	switch (type) {
+	  case "plain":
+		htxt=txt+"<br />\n";
+	  break;
+	  case "info":
+		htxt="<span style='color: green'>"+txt+"</span><br />\n";
+	  break;
+	  case "error":
+		htxt="<span style='color: red'>"+txt+"</span><br />\n";
+	  break;
+	  case "debug":
+		htxt="<div style='background-color: yellow;font-style:italic;border: 1px dotted black'>"+txt+"</div>\n";
+	  break;
+	  case "h":
+		htxt="<h2>"+txt+"</h2>\n";
+	  break;
+	};
 	e=document.getElementById('io');
 	if (e)
-		e.innerHTML+=txt+sep+"\n";
-}
-function msg(txt) {
-	log(txt,"<hr />");
-}
-function msgi(txt) {
-	log("<span style='color: green'>"+txt+"</span>","<br />");
-}
-function msge(txt) {
-	log("<span style='color: red'>"+txt+"</span>","<br />");
-}
-function msgd(txt) {
-	log("<div style='background-color: yellow;font-style:italic'>"+txt+"</div>","");
-}
-function msgh(txt) {
-	log("<h2>"+txt+"</h2>","");
+		e.innerHTML+=htxt;
+	else
+		alert("no io div");
 }

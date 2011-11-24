@@ -25,6 +25,7 @@ public class CfgAct extends Activity {
 		mEmail = (EditText) findViewById(R.id.etEmail);
 		mDevKey = (EditText) findViewById(R.id.etDevKey);
 	}
+	
 	public void saveBut(View view) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		SharedPreferences.Editor editor = prefs.edit();

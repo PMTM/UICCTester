@@ -44,7 +44,7 @@ public final class ServiceHandler {
 		mCB = (CallBack) new SESvcCB();
 		new SEService(_a, mCB);
 		logItems.clear();
-		log("testId: "+testID);
+		log("plain","testId: "+testID);
 		return "called";
 	}
 
@@ -61,8 +61,8 @@ public final class ServiceHandler {
 		return res;
 	}
 
-	public void log(String txt) {
-		logItems.add("["+DateTimeUtil.getDTString()+"]: "+txt);
+	public void log(String type,String txt) {
+		logItems.add("["+DateTimeUtil.getDTString()+"]/"+type+": "+txt);
 	}
 
 	public String getTLV(String baStr, String ofsStr) {

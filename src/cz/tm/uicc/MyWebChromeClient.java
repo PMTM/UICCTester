@@ -38,20 +38,11 @@ public class MyWebChromeClient extends WebChromeClient {
 	 */
 	@Override
 	public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-		/*
-		 * Log.d(getClass().getSimpleName(), "onConsoleMessage: " +
-		 * consoleMessage.messageLevel() + "/" + consoleMessage.message());
-		 */
 
-		// Intent i = new Intent();
-		// i.putExtra("mgm.type", "JS/Console");
-		// i.putExtra("mgm.level", consoleMessage.messageLevel().name());
-		// i.putExtra("msg.line", "" + consoleMessage.lineNumber());
-		// i.putExtra("msg.text", consoleMessage.message());
-		// i.putExtra("msg.file", consoleMessage.sourceId());
-		//
-		// i.setAction(MWConstants.SVC_LOG_EVENT);
-		// startService(i);
+		Context context = _a.getApplicationContext();
+		int duration = Toast.LENGTH_SHORT;
+		Toast toast = Toast.makeText(context, consoleMessage.message(), duration);
+		toast.show();
 
 		return false;
 	}
