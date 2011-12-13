@@ -24,6 +24,7 @@ public final class ServiceHandler {
 	private Channel channel;
 	private Session session;
 	private Reader reader = null;
+	private String readerName = "UICC";
 	public ArrayList<String> logItems = new ArrayList<String>();
 
 	// private SEService mSESvc = null;
@@ -159,6 +160,12 @@ public final class ServiceHandler {
 			return "session not open";
 		}
 	}
+	
+	public String setReaderName(String newReaderName) {
+		String oldReaderName = readerName;
+		readerName =  newReaderName;
+		return oldReaderName;
+	}
 
 	public class SESvcCB implements CallBack {
 		public void serviceConnected(SEService service) {
@@ -179,7 +186,7 @@ public final class ServiceHandler {
 						res = "no readers";
 					} else {
 						for (Reader xReader : readers) {
-							if (xReader.getName().equals("UICC")) {
+							if (xReader.getName().equals(readerName)) {
 								reader = xReader;
 								LoggerTool.logIt("Selected Reader:" + xReader.getName() + "\n");
 

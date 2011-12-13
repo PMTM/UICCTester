@@ -10,6 +10,9 @@
 <script rel="script" type="text/javascript" language="javascript" src="t001.js"></script>
 <script rel="script" type="text/javascript" language="javascript">
 function go() {
+  m=dtest.setReaderName("SIM");
+  msg("info","setting reader to SIM, old was = "+m);
+
   m=dtest.UICCInit("test#001");
 }
 </script>
