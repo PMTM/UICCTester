@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8" />
+<title>Xlinux.CZ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<style type="text/css" media="screen">@import "ok.css";</style>
+<script rel="script" type="text/javascript" language="javascript" src="util.js"></script>
+<script rel="script" type="text/javascript" language="javascript" src="t001b.js"></script>
+<script rel="script" type="text/javascript" language="javascript">
+function go() {
+  m=dtest.setReaderName("UICC");
+  msg("info","setting reader to SIM, old was = "+m);
+
+  m=dtest.UICCInit("test#001b");
+}
+</script>
+</head>
+
+<body style='margin:0;padding:0' onLoad='go()'>
+
+<div>
+<div class="pm">
+<h1>Android Test Framework</h1>
+</div>
+<hr />
+
+<div id='io'>Waiting for UICC response<br /></div>
+
+</div>
+
+</body>
+</html>
