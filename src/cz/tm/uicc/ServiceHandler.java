@@ -19,7 +19,6 @@ import eu.mighty.javatools.TLV;
 
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.os.Message;
 import android.util.Log;
 
@@ -190,6 +189,7 @@ public final class ServiceHandler {
 	public class SESvcCB implements CallBack {
 		public void serviceConnected(SEService service) {
 			boolean seFound =  false;
+			boolean isPresent = false;
 			try {
 				mSEService = service;
 				mSEServiceReady = true;
@@ -214,7 +214,7 @@ public final class ServiceHandler {
 								reader = xReader;
 								LoggerTool.logIt("Selected Reader:" + xReader.getName() + "\n");
 
-								boolean isPresent = xReader.isSecureElementPresent();
+								isPresent = xReader.isSecureElementPresent();
 								String s = isPresent ? "present" : "absent";
 								LoggerTool.logIt("SecureElement : " + s);
 								res = xReader.getName() + "/" + s + ",";
@@ -232,7 +232,11 @@ public final class ServiceHandler {
 				Message pMsg = new Message();
 				String str = "";
 				if (seFound) {
-					str = "connected:" + res;
+					if (!isPresent) {
+						str = "found but not connected:" + res;
+					} else {
+						str = "connected:" + res;
+					}
 				} else {
 					str = "not-found, only available:" + res;
 				}
