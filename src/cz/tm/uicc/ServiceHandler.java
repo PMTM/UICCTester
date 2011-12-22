@@ -1,7 +1,10 @@
 package cz.tm.uicc;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.simalliance.openmobileapi.Channel;
 import org.simalliance.openmobileapi.Reader;
@@ -15,6 +18,8 @@ import eu.mighty.javatools.LoggerTool;
 import eu.mighty.javatools.TLV;
 
 import android.app.Activity;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.os.Message;
 import android.util.Log;
 
@@ -149,6 +154,21 @@ public final class ServiceHandler {
 		return res;
 	}
 
+	public String getVersion() {
+		String ts="unknown version";
+		try{
+		     ApplicationInfo ai = _a.getPackageManager().getApplicationInfo(_a.getPackageName(), 0);
+		     ZipFile zf = new ZipFile(ai.sourceDir);
+		     ZipEntry ze = zf.getEntry("classes.dex");
+		     long time = ze.getTime();
+		     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+		     ts = "ver: "+sdf.format(new java.util.Date(time));
+		  }catch(Exception e){
+			 ts = "exception getting version";
+		  };
+		  return ts;
+	}
+	
 	public String UICCClose() {
 		if (session != null) {
 			LoggerTool.logIt("session.closeChannels()");
@@ -164,11 +184,12 @@ public final class ServiceHandler {
 	public String setReaderName(String newReaderName) {
 		String oldReaderName = readerName;
 		readerName =  newReaderName;
-		return oldReaderName;
+		return "SE change now = '"+newReaderName+"', before = '"+oldReaderName+"'";
 	}
 
 	public class SESvcCB implements CallBack {
 		public void serviceConnected(SEService service) {
+			boolean seFound =  false;
 			try {
 				mSEService = service;
 				mSEServiceReady = true;
@@ -185,6 +206,9 @@ public final class ServiceHandler {
 						mSEService.shutdown();
 						res = "no readers";
 					} else {
+						String tmp = "";
+						seFound =  false;
+						reader =  null;
 						for (Reader xReader : readers) {
 							if (xReader.getName().equals(readerName)) {
 								reader = xReader;
@@ -193,16 +217,25 @@ public final class ServiceHandler {
 								boolean isPresent = xReader.isSecureElementPresent();
 								String s = isPresent ? "present" : "absent";
 								LoggerTool.logIt("SecureElement : " + s);
-								res = xReader.getName() + "/" + s;
+								res = xReader.getName() + "/" + s + ",";
+								seFound = true;
+							} else {
+								tmp += xReader.getName() + ",";
 							}
 						}
+						res+=tmp;
 					}
 				} else {
 					res = "uicc is not ready";
 				}
 
 				Message pMsg = new Message();
-				String str = "connected:" + res;
+				String str = "";
+				if (seFound) {
+					str = "connected:" + res;
+				} else {
+					str = "not-found, only available:" + res;
+				}
 				pMsg.obj = str;
 				((UICCTester) _a).mMsgHandle.sendMessage(pMsg);
 			} catch (Exception e) {

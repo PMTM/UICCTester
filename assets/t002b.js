@@ -1,6 +1,6 @@
 function seReady(info) {
-	msg("UICC reports: "+info);
-	if (info=="connected:UICC/present") {
+	msg("debug","UICC reports: "+info);
+	if (info.substr(0,10)=="connected:") {
 		msg("info","Opening logical channel with CRS AID");
 		m=dtest.openLogicalChannel("A0 00 00 01 51 43 52 53 00");
 		msg("plain",m);
@@ -21,7 +21,7 @@ function seReady(info) {
 				msg("error","Unfortunately the result does not match expectation");
 				msg("debug","Expected: "+exp);
 			}
-			msg("debug",m.substr(3));
+			msg("debug","Received: "+m.substr(3));
 		} else {
 			msg("error","Command error");
 			msg("debug","resp: "+m.substr(3));
