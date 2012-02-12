@@ -32,7 +32,6 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Toast;
 import eu.mighty.javatools.JSON2Java;
 import eu.mighty.javatools.LoggerTool;
 import eu.mighty.javatools.RestClient;
@@ -95,6 +94,21 @@ public class UICCTester extends Activity {
 					PackageManager.GET_META_DATA);
 
 			Bundle bundle = ap_i.metaData;
+
+			if (bundle != null) {
+				String value = (String) bundle.get("zoo");
+
+				Log.d(TAG, "value =" + value);
+
+				// Toast.makeText(getApplicationContext(), "from meta: " +
+				// value,
+				// Toast.LENGTH_LONG).show();
+				// } else {
+				// Toast.makeText(getApplicationContext(), "no bundle",
+				// Toast.LENGTH_LONG).show();
+
+			}
+			bundle = ac_i.metaData;
 
 			if (bundle != null) {
 				String value = (String) bundle.get("zoo");
