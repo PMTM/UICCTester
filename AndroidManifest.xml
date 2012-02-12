@@ -6,7 +6,7 @@
 
     <uses-sdk android:minSdkVersion="10" />
 
-    <!-- uses-permission android:name="android.permission.SMARTCARD" /-->
+    <!-- uses-permission android:name="android.permission.SMARTCARD" / -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -17,7 +17,12 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Light" >
+
         <uses-library android:name="org.simalliance.openmobileapi" />
+
+        <meta-data
+            android:name="zoo"
+            android:value="app/kangaroo" />
 
         <activity
             android:label="@string/app_name"
@@ -27,6 +32,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data
+                android:name="zoo"
+                android:value="activity/kangaroo" />
         </activity>
         <activity
             android:label="Cfg UICC"

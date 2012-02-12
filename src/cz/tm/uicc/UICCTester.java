@@ -16,6 +16,10 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,6 +32,7 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Toast;
 import eu.mighty.javatools.JSON2Java;
 import eu.mighty.javatools.LoggerTool;
 import eu.mighty.javatools.RestClient;
@@ -42,10 +47,12 @@ public class UICCTester extends Activity {
 	private int selItem;
 	private ServiceHandler mServiceHandler = null;
 
+	private static final String TAG = "UIIU";
+
 	public Handler mMsgHandle = new Handler() {
 		public void handleMessage(Message msg) {
-			if (wv!=null) {
-				wv.loadUrl("javascript:seReady('"+(String)msg.obj+"')");
+			if (wv != null) {
+				wv.loadUrl("javascript:seReady('" + (String) msg.obj + "')");
 			}
 		}
 	};
@@ -54,7 +61,7 @@ public class UICCTester extends Activity {
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
 		setContentView(R.layout.webview);
 		wv = (WebView) findViewById(R.id.wv);
 		WebSettings webSettings = wv.getSettings();
@@ -69,10 +76,43 @@ public class UICCTester extends Activity {
 		wv.setWebChromeClient(new MyWebChromeClient(this));
 		wv.setWebViewClient(new MyWebViewClient(this));
 
-		mServiceHandler=new ServiceHandler(this);
+		mServiceHandler = new ServiceHandler(this);
 		wv.addJavascriptInterface(mServiceHandler, "dtest");
 
 		wv.loadUrl(UtilConstants.baseUrl);
+
+		ActivityInfo ac_i;
+		ApplicationInfo ap_i;
+
+		// Toast.makeText(getApplicationContext(),
+		// "componet name: " + this.getComponentName(), Toast.LENGTH_LONG)
+		// .show();
+		try {
+			ap_i = getPackageManager().getApplicationInfo(
+					this.getPackageName(), PackageManager.GET_META_DATA);
+
+			ac_i = getPackageManager().getActivityInfo(this.getComponentName(),
+					PackageManager.GET_META_DATA);
+
+			Bundle bundle = ap_i.metaData;
+
+			if (bundle != null) {
+				String value = (String) bundle.get("zoo");
+
+				Log.d(TAG, "value =" + value);
+
+				// Toast.makeText(getApplicationContext(), "from meta: " +
+				// value,
+				// Toast.LENGTH_LONG).show();
+				// } else {
+				// Toast.makeText(getApplicationContext(), "no bundle",
+				// Toast.LENGTH_LONG).show();
+
+			}
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -80,32 +120,33 @@ public class UICCTester extends Activity {
 		inflater.inflate(R.menu.menu, menu);
 		return true;
 	}
-	
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(event.getAction() == KeyEvent.ACTION_DOWN){
-            switch(keyCode)
-            {
-            case KeyEvent.KEYCODE_BACK:
-                if(wv.canGoBack() == true){
-                    wv.goBack();
-                }else{
-                    finish();
-                }
-                return true;
-            }
 
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (event.getAction() == KeyEvent.ACTION_DOWN) {
+			switch (keyCode) {
+			case KeyEvent.KEYCODE_BACK:
+				if (wv.canGoBack() == true) {
+					wv.goBack();
+				} else {
+					finish();
+				}
+				return true;
+			}
+
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.settings:
-			//startActivity(new Intent(this, CfgPrefs.class));
+			// startActivity(new Intent(this, CfgPrefs.class));
 			startActivity(new Intent(this, CfgAct.class));
 			return true;
 		case R.id.postLog:
-			RestClient.postString(UtilConstants.postUrl, JSON2Java.jsonFromArray(mServiceHandler.logItems) , this);
+			RestClient.postString(UtilConstants.postUrl,
+					JSON2Java.jsonFromArray(mServiceHandler.logItems), this);
 			return true;
 		case R.id.getTest:
 			wv.loadUrl(UtilConstants.baseUrl);
