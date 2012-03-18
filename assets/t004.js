@@ -5,6 +5,9 @@ function seReady(info) {
 		m=dtest.openLogicalChannel("32 50 41 59 2E 53 59 53 2E 44 44 46 30 31");
 		msg("debug",m);
 		msg("info","Send CL registry query to ISD/with Le=0");
+		
+		m=dtest.getSelectResponse();
+		msg("debug","getSelectResponse(): "+m);
 
 		exp="90 00";
 		// select 2PAY.SYS.DDF01

@@ -118,6 +118,8 @@ public final class ServiceHandler {
 
 	public String getSelectResponse() {
 		String res = "";
+		//byte[] ba = channel.getSelectResponse();
+		//res=HexTools.ba2hs(ba);
 		//channel.getSelectResponse();
 		return res;
 	}
