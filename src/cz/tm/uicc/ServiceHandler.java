@@ -47,9 +47,14 @@ public final class ServiceHandler {
 	public String UICCInit(String testID) {
 		Log.i(TAG, "JS: UICCInit");
 		mCB = (CallBack) new SESvcCB();
-		new SEService(_a, mCB);
+		try {
+			new SEService(_a, mCB);
+		} catch (Exception e) {
+			Log.e("UIIU", "Exception in creation", e);
+		}
+		;
 		logItems.clear();
-		log("plain","testId: "+testID);
+		log("plain", "testId: " + testID);
 		return "called";
 	}
 
@@ -66,8 +71,9 @@ public final class ServiceHandler {
 		return res;
 	}
 
-	public void log(String type,String txt) {
-		logItems.add("["+DateTimeUtil.getDTString()+"]/"+type+": "+txt);
+	public void log(String type, String txt) {
+		logItems.add("[" + DateTimeUtil.getDTString() + "]/" + type + ": "
+				+ txt);
 	}
 
 	public String getTLV(String baStr, String ofsStr) {
@@ -154,20 +160,22 @@ public final class ServiceHandler {
 	}
 
 	public String getVersion() {
-		String ts="unknown version";
-		try{
-		     ApplicationInfo ai = _a.getPackageManager().getApplicationInfo(_a.getPackageName(), 0);
-		     ZipFile zf = new ZipFile(ai.sourceDir);
-		     ZipEntry ze = zf.getEntry("classes.dex");
-		     long time = ze.getTime();
-		     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-		     ts = "ver: "+sdf.format(new java.util.Date(time));
-		  }catch(Exception e){
-			 ts = "exception getting version";
-		  };
-		  return ts;
+		String ts = "unknown version";
+		try {
+			ApplicationInfo ai = _a.getPackageManager().getApplicationInfo(
+					_a.getPackageName(), 0);
+			ZipFile zf = new ZipFile(ai.sourceDir);
+			ZipEntry ze = zf.getEntry("classes.dex");
+			long time = ze.getTime();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			ts = "ver: " + sdf.format(new java.util.Date(time));
+		} catch (Exception e) {
+			ts = "exception getting version";
+		}
+		;
+		return ts;
 	}
-	
+
 	public String UICCClose() {
 		if (session != null) {
 			LoggerTool.logIt("session.closeChannels()");
@@ -179,16 +187,16 @@ public final class ServiceHandler {
 			return "session not open";
 		}
 	}
-	
+
 	public String setReaderName(String newReaderName) {
-		String oldReaderName = readerName;
-		readerName =  newReaderName;
-		return "SE change now = '"+newReaderName+"', before = '"+oldReaderName+"'";
+		// String oldReaderName = readerName;
+		readerName = newReaderName;
+		return "SE requested = '" + newReaderName + "'";
 	}
 
 	public class SESvcCB implements CallBack {
 		public void serviceConnected(SEService service) {
-			boolean seFound =  false;
+			boolean seFound = false;
 			boolean isPresent = false;
 			try {
 				mSEService = service;
@@ -206,24 +214,26 @@ public final class ServiceHandler {
 						mSEService.shutdown();
 						res = "no readers";
 					} else {
-						String tmp = "";
-						seFound =  false;
-						reader =  null;
+						seFound = false;
+						reader = null;
+						res = "readers=";
 						for (Reader xReader : readers) {
+							isPresent = xReader.isSecureElementPresent();
+							String s = isPresent ? "present" : "absent";
+							String rn = xReader.getName();
+							LoggerTool
+									.logIt("SecureElement (" + rn + "): " + s);
+							res += "<br />\\'" + rn + "\\' ("
+									+ HexTools.ba2hs(rn.getBytes()) + ")/" + s
+									+ ",";
+
 							if (xReader.getName().equals(readerName)) {
 								reader = xReader;
-								LoggerTool.logIt("Selected Reader:" + xReader.getName() + "\n");
-
-								isPresent = xReader.isSecureElementPresent();
-								String s = isPresent ? "present" : "absent";
-								LoggerTool.logIt("SecureElement : " + s);
-								res = xReader.getName() + "/" + s + ",";
+								LoggerTool.logIt("Selected Reader:"
+										+ xReader.getName() + "\n");
 								seFound = true;
-							} else {
-								tmp += xReader.getName() + ",";
 							}
 						}
-						res+=tmp;
 					}
 				} else {
 					res = "uicc is not ready";
@@ -238,7 +248,7 @@ public final class ServiceHandler {
 						str = "connected:" + res;
 					}
 				} else {
-					str = "not-found, only available:" + res;
+					str = "not-found:" + res;
 				}
 				pMsg.obj = str;
 				((UICCTester) _a).mMsgHandle.sendMessage(pMsg);
