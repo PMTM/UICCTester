@@ -116,6 +116,12 @@ public final class ServiceHandler {
 		return res;
 	}
 
+	public String getSelectResponse() {
+		String res = "";
+		//channel.getSelectResponse();
+		return res;
+	}
+
 	public String sendCommands(String cmd, String exp) {
 		String res = "";
 
