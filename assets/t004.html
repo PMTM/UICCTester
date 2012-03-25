@@ -3,13 +3,17 @@
 <head>
 <meta charset="UTF-8" />
 <title>Xlinux.CZ</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <style type="text/css" media="screen">@import "ok.css";</style>
 <script rel="script" type="text/javascript" language="javascript" src="util.js"></script>
 <script rel="script" type="text/javascript" language="javascript" src="t004.js"></script>
 <script rel="script" type="text/javascript" language="javascript">
 function go() {
+  m=dtest.getMCCMNC_SIM();
+  msg("info","MCC MNC/SIM = "+m);
+  m=dtest.getMCCMNC_AIR();
+  msg("info","MCC MNC/AIR = "+m);
   e_sename=document.getElementById("sename");
   e_selsename=document.getElementById("selsename");
   if (e_sename.value=="") {

@@ -27,7 +27,7 @@
 
         <activity
             android:label="@string/app_name"
-            android:name=".UICCTester" >
+            android:name=".UICCTester" android:screenOrientation="portrait">
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
 

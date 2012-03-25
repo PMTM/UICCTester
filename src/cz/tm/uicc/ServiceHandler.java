@@ -18,8 +18,10 @@ import eu.mighty.javatools.LoggerTool;
 import eu.mighty.javatools.TLV;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.os.Message;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public final class ServiceHandler {
@@ -117,11 +119,37 @@ public final class ServiceHandler {
 	}
 
 	public String getSelectResponse() {
-		String res = "";
+		String res = "call not available";
 		//byte[] ba = channel.getSelectResponse();
 		//res=HexTools.ba2hs(ba);
 		//channel.getSelectResponse();
 		return res;
+	}
+	
+	public String getMCCMNC_SIM() {
+		TelephonyManager tel = (TelephonyManager) _a.getSystemService(Context.TELEPHONY_SERVICE);
+	    String networkOperator = tel.getNetworkOperator();
+
+	    if (networkOperator != null) {
+	        int mcc = Integer.parseInt(networkOperator.substring(0, 3));
+	        int mnc = Integer.parseInt(networkOperator.substring(3));
+	        return String.format("%03d%02d",mcc,mnc);
+	    } else {
+	    	return "00000";
+	    }
+	}
+
+	public String getMCCMNC_AIR() {
+		TelephonyManager tel = (TelephonyManager) _a.getSystemService(Context.TELEPHONY_SERVICE);
+	    String networkOperator = tel.getSimOperator();
+
+	    if (networkOperator != null) {
+	        int mcc = Integer.parseInt(networkOperator.substring(0, 3));
+	        int mnc = Integer.parseInt(networkOperator.substring(3));
+	        return String.format("%03d%02d",mcc,mnc);
+	    } else {
+	    	return "00000";
+	    }
 	}
 
 	public String sendCommands(String cmd, String exp) {
