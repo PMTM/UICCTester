@@ -120,10 +120,17 @@ public final class ServiceHandler {
 
 	public String getSelectResponse() {
 		String res = "call not available";
-		//byte[] ba = channel.getSelectResponse();
-		//res=HexTools.ba2hs(ba);
-		//channel.getSelectResponse();
+		byte[] ba = channel.getSelectResponse();
+		res=HexTools.ba2hs(ba);
+		channel.getSelectResponse();
 		return res;
+	}
+	
+	public void loadRelativeURL(String rUrl) {
+		Log.i(TAG, "mWBridge/JS: loadRelativeURL('" + rUrl + "')");
+
+		String FILES_DIR = _a.getFilesDir().getAbsolutePath();
+		((UICCTester)_a).wv.loadUrl("file://" + FILES_DIR + rUrl);
 	}
 	
 	public String getMCCMNC_SIM() {

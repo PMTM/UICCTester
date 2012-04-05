@@ -41,7 +41,7 @@ import eu.mighty.javatools.UtilConstants;
 
 public class UICCTester extends Activity {
 
-	private WebView wv = null;
+	public WebView wv = null;
 	private String logStr = "";
 	private int selItem;
 	private ServiceHandler mServiceHandler = null;

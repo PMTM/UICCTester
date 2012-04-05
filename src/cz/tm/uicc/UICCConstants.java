@@ -3,6 +3,7 @@ package cz.tm.uicc;
 import eu.mighty.javatools.HexTools;
 
 public class UICCConstants {
+	static int BUFFER = 8192;
 	static String S_ISD_AID = "A0 00 00 00 03 00 00 00";
 	static String S_ISD_CMD = "80 CA 9F 7F 00";
 	static String S_CRS_AID = "A0 00 00 01 51 43 52 53 00";

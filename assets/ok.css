@@ -48,7 +48,11 @@ ul.pm > li:last-child {
 }
 
 li.desc {
-  background-color: #eee;
+  background-color: #fff;
+}
+
+li.arrow {
+  background-color: #efe;
 }
 
 li.desc > ul {
