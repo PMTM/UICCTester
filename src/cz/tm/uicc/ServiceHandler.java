@@ -133,7 +133,7 @@ public final class ServiceHandler {
 		((UICCTester)_a).wv.loadUrl("file://" + FILES_DIR + rUrl);
 	}
 	
-	public String getMCCMNC_SIM() {
+	public String getMCCMNC_AIR() {
 		TelephonyManager tel = (TelephonyManager) _a.getSystemService(Context.TELEPHONY_SERVICE);
 	    String networkOperator = tel.getNetworkOperator();
 
@@ -146,7 +146,7 @@ public final class ServiceHandler {
 	    }
 	}
 
-	public String getMCCMNC_AIR() {
+	public String getMCCMNC_SIM() {
 		TelephonyManager tel = (TelephonyManager) _a.getSystemService(Context.TELEPHONY_SERVICE);
 	    String networkOperator = tel.getSimOperator();
 
@@ -235,6 +235,27 @@ public final class ServiceHandler {
 		// String oldReaderName = readerName;
 		readerName = newReaderName;
 		return "SE requested = '" + newReaderName + "'";
+	}
+	
+	public String getReadersNames() {
+		Reader[] readers = mSEService.getReaders();
+		boolean isPresent = false;
+
+		String res="";
+		if (readers.length == 0) {
+			res = "no readers";
+		} else {
+			res = "readers=";
+			for (Reader xReader : readers) {
+				isPresent = xReader.isSecureElementPresent();
+				String s = isPresent ? "present" : "absent";
+				String rn = xReader.getName();
+				res += "<br />\\'" + rn + "\\' ("
+						+ HexTools.ba2hs(rn.getBytes()) + ")/" + s
+						+ ",";
+			}
+		}
+		return res;
 	}
 
 	public class SESvcCB implements CallBack {
