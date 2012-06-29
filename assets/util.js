@@ -26,7 +26,10 @@ function msg(type,txt) {
 		alert("no io div");
 }
 SEID="SIM: UICC";
-var MCREL="A0 00 00 00 87 10 03 FF 49 94 20 89 FF 01 01 01";
+SEFAKE_S="SIM: JaraDaCimrman";
+SEFAKE_N="NIM: JaraDaCimrman";
+var FAKE_AID="01 02 03 04 05 06 07 08 09 0A 0B 0C 0D";
+var MCREL=   "A0 00 00 00 87 10 03 FF 49 94 20 89 FF 01 01 01";
 //2PAY.SYS.DDF01
 var PPSE="32 50 41 59 2E 53 59 53 2E 44 44 46 30 31";
 //1PAY.SYS.DDF01

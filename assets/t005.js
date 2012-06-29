@@ -1,8 +1,8 @@
 function seReady(info) {
 	msg("debug", "UICC reports: " + info);
 	if (info.substr(0, 10) == "connected:") {
-		msg("info", "Opening logical channel with MCREL AID");
-		m = dtest.openLogicalChannel(MCREL);
+		msg("info", "Opening logical channel with CRS AID");
+		m = dtest.openLogicalChannel(CRS);
 		msg("debug", m);
 		msg("info", "mCREL");
 

@@ -7,5 +7,11 @@ function seReady(info) {
   		msg("info","MCC MNC/AIR = "+m);
   		m=dtest.getReadersNames();
   		msg("info",m);
+  		
+  		// msg("info", "Opening logical channel with FAKE_AID");
+		// m = dtest.openLogicalChannel(FAKE_AID);
+		// msg("debug", m);
+		// msg("info", "mCREL");
+  		
 	}
 }
