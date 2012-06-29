@@ -28,6 +28,7 @@ function msg(type,txt) {
 SEID="SIM: UICC";
 SEFAKE_S="SIM: JaraDaCimrman";
 SEFAKE_N="NIM: JaraDaCimrman";
+var ISD="A0 00 00 00 03 00 00 00";
 var FAKE_AID="01 02 03 04 05 06 07 08 09 0A 0B 0C 0D";
 var MCREL=   "A0 00 00 00 87 10 03 FF 49 94 20 89 FF 01 01 01";
 //2PAY.SYS.DDF01
