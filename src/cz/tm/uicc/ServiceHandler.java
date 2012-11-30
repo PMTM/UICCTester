@@ -282,8 +282,8 @@ public final class ServiceHandler {
 						reader = null;
 						res = "readers=";
 						for (Reader xReader : readers) {
-							isPresent = xReader.isSecureElementPresent();
-							String s = isPresent ? "present" : "absent";
+							boolean isPresentTmp = xReader.isSecureElementPresent();
+							String s = isPresentTmp ? "present" : "absent";
 							String rn = xReader.getName();
 							LoggerTool
 									.logIt("SecureElement (" + rn + "): " + s);
@@ -296,6 +296,7 @@ public final class ServiceHandler {
 								LoggerTool.logIt("Selected Reader:"
 										+ xReader.getName() + "\n");
 								seFound = true;
+								isPresent = xReader.isSecureElementPresent();
 							}
 						}
 					}
