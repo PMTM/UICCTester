@@ -1,0 +1,3 @@
+t-primitive:Primitive Test
+t-mcrel:Test applet
+t-mccmnc:Get mobile country code and network code

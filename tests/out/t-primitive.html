@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>@title@</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<style type="text/css" media="screen">@import "../css/ok.css";</style>
+<script rel="script" type="text/javascript" language="javascript" src="../js/rankl.js"></script>
+<script rel="script" type="text/javascript" language="javascript" src="../js/util.js"></script>
+<script rel="script" type="text/javascript" language="javascript" src="t-primitive.js"></script>
+<script rel="script" type="text/javascript" language="javascript">
+function go() {
+  m=dtest.setReaderName(SEID);
+  msg("info",m);
+  m=dtest.UICCInit("t-primitive/Primitive Test");
+}
+</script>
+</head>
+<body style='margin:0;padding:0' onLoad='go()'>
+<div>
+<div class="pm">
+<h1>Android Test Framework</h1>
+</div>
+<hr />
+<div id='io'>Waiting for UICC response<br /></div>
+</div>
+</body>
+</html>

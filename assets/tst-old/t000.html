@@ -5,15 +5,15 @@
 <title>Xlinux.CZ</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<style type="text/css" media="screen">@import "ok.css";</style>
-<script rel="script" type="text/javascript" language="javascript" src="util.js"></script>
-<script rel="script" type="text/javascript" language="javascript" src="t002b.js"></script>
+<style type="text/css" media="screen">@import "../css/ok.css";</style>
+<script rel="script" type="text/javascript" language="javascript" src="../js/util.js"></script>
 <script rel="script" type="text/javascript" language="javascript">
 function go() {
-  m=dtest.setReaderName(SEID);
-  msg("info",m);
-
-  m=dtest.UICCInit("test#002");
+  msg("plain","plain");
+  msg("h","h");
+  msg("debug","debug");
+  msg("info","info");
+  msg("error","error");
 }
 </script>
 </head>
@@ -26,7 +26,7 @@ function go() {
 </div>
 <hr />
 
-<div id='io'>Waiting for UICC response<br /></div>
+<div id='io'>Self test in progress<br /></div>
 
 </div>
 
